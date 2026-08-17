@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Improvement Tracker"
+  short_description: "Track project changes, tests, and key metric trends"
+  default_prompt: "Use $project-improvement-tracker to update the project detail and timeline records for this improvement."
+
+policy:
+  allow_implicit_invocation: true
