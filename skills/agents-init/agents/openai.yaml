@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agents Init"
+  short_description: "Initialize durable project agent documentation"
+  default_prompt: "Use $agents-init to investigate and initialize this project."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workspace Manager"
+  short_description: "Maintain a compact multi-repository workspace map"
+  default_prompt: "Use $workspace-manager to update WORKSPACE.md for these structural changes."
