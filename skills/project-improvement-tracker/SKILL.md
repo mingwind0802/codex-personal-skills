@@ -1,54 +1,36 @@
 ---
 name: project-improvement-tracker
-description: Track material project improvements and experiments with linked, reproducible decisions while keeping current records compact.
+description: 在完成实质项目改进、实验或阶段决策，以及用户要求记录或整理改进历史时使用。维护精简的 Timeline、Detail 和证据关联；普通问答和无实质结果的小改动不单独建记录。
 ---
 
-# Project Improvement Tracker
+# 项目改进记录
 
-Keep project history useful without letting the default agent read set grow with time.
+让人直接看到方法、结果、采用原因和下一步，让 Agent 按需追溯实现；默认读取量不随历史无限增长。
 
-## Structure
+## 入口与流程
 
-Use three levels:
+1. 读取适用的 AGENTS.md，按已有约定定位记录；需要确认仓库或路径时读取 WORKSPACE.md。
+2. 读取当前 Timeline 和相关 Detail；仅在核实或调试时读取对应 Artifact，不默认扫描全部历史、归档或日志。
+3. 沿用现有记录目录；没有入口时在项目现有文档位置确定一个主入口并登记，不额外复制一套记录。
+4. 同一目标和阶段沿用 `IMP-YYYYMMDD-NN`，实验使用该 IMP 内稳定、不复用的 `EXP-NN`。目标或阶段实质改变时新建 IMP 并链接前后继。
+5. 实质实验或改进结束后先更新 Detail，再更新 Timeline。跨仓库工作使用一份主记录，注明涉及仓库。
 
-1. **Timeline** — compact index.
-2. **Detail** — one bounded record per `IMP-YYYYMMDD-NN`.
-3. **Artifact** — existing code, patches, configs, logs, benchmark outputs, reports, and retained results.
+使用三层：Timeline 索引、Detail 决策记录、Artifact 原始证据。优先引用已有配置、结果和报告，不另建 Evidence 日志。
 
-Artifacts are evidence and recoverable implementations. Detail records decisions. Timeline indexes Detail. Do not create a separate Evidence log or duplicate evidence documents.
-
-## Workflow
-
-1. Read applicable `AGENTS.md` and `WORKSPACE.md`.
-2. Read current Timeline.
-3. Follow the IMP link and read only the relevant Detail.
-4. Read artifacts only when verification or debugging requires them.
-5. Reuse the same IMP for the same objective. Create a new IMP only when the objective or phase materially changes; length alone is not a reason.
-6. After a material experiment or change, update Detail, then Timeline.
-
-Do not scan all Details or archives by default. Use the record and artifact locations established in `WORKSPACE.md` when present.
-
-## Status and Timeline
-
-Use statuses: `进行中`, `暂停`, `已完成`, `已放弃`.
-
-Use:
+## Timeline
 
 ```markdown
 | 日期 | 改进 ID | 改进内容 | 状态 | 关键结果 | 下一步 |
 |---|---|---|---|---|---|
-| YYYY-MM-DD | [IMP-YYYYMMDD-NN](relative/path/to/detail.md) | ... | 进行中 | ... | ... |
 ```
 
-The IMP ID must link directly to its Detail using a path relative to the Timeline document. Keep one short row per IMP.
+每个 IMP 一行，ID 链接 Detail，日期为最近一次实质更新。状态统一为：进行中／暂停／已完成／已放弃。
 
-Current Timeline contains all `进行中` IMPs and the latest roughly 30 non-active records. Move older `暂停`, `已完成`, and `已放弃` rows to date-based archives; when work resumes, move its row back. Never renumber an IMP or its EXP entries during compaction, archival, or restoration.
+当前 Timeline 保留进行中任务及最近约 30 条非活跃记录，其余移入按日期组织的归档。暂停须有任务事实依据，不因记录过多擅自改变状态；恢复任务时移回当前索引。按需搜索归档，不默认读全量历史。
 
 ## Detail
 
-Detail should answer:
-
-**做了什么 → 指标怎么变 → 为什么采用或放弃 → 实现和证据在哪里 → 下一步是什么**
+只填写适用项，删除空字段；记录中文、短句，优先使用下列结构：
 
 ```markdown
 # IMP-YYYYMMDD-NN 标题
@@ -56,68 +38,42 @@ Detail should answer:
 状态：
 目标：
 涉及仓库：
-前置／后继：仅有依赖或阶段承接时填写
+前置／后继：有承接关系时填写链接
 
 ## 当前结论
-
-- 当前采用：EXP-xx，采用原因。
+- 当前采用：EXP 编号、方案及原因；尚无结论时明确写待验证。
 - 关键结果：相对基线的主要收益与代价。
-- 尚未确认：仅填写影响判断的未验证事项。
+- 尚未确认：仅列影响判断的事项。
 
 ## 下一步
-
-下一项明确的实验或动作；已结束则写“无”。
+下一项明确动作；已结束则写无。
 
 ## 比较口径
-
-基线、评估数据／版本、关键评估条件。
-共同条件只写一次，后续实验仅说明差异。
+基线、评估数据／版本、关键评估条件；共同条件只写一次。
 
 ## 实验记录
-
 | 实验 | 方法／关键改动 | 结果与代价 | 决策／原因 | 实现与证据 |
 |---|---|---|---|---|
-| EXP-01 | 改了什么、关键设置 | 基线→结果及变化 | 采用／不采用／待验证及原因 | 代码、配置、结果链接 |
 
 ## 保留成果
-
-仅列当前采用、历史最优或指定回退版本的产物入口。
-没有则省略。
+当前采用、历史最优、指定回退版本的产物入口及对应 EXP；没有则省略。
 ```
 
-“方法／关键改动”必须具体到足以区分实验，例如“增加一层通道混合，通道数 32→64”，不能只写“优化模型结构”。分别判断“当前采用”和“指标最好”：效果最好但资源、稳定性或其他约束不合格的实验可以不采用，并记录原因。
+- 方法写清能区分实验的改动和关键设置，不只写“优化模型”。每次保留 1–3 个影响决策的指标，说明必要的资源代价；非指标改进记录原行为与验证后行为。
+- 决策使用采用／不采用／待验证，并给出简短原因；效果最好不等于当前采用。独立变化较多时，不把组合收益归因于某一个改动。
+- 每个有决策价值的实验关联对应实现、实际配置和结果证据。共用信息可统一引用，变化按实验注明；跨仓库列出所涉版本。
+- 未提交代码影响结果时，保存相关补丁或最小快照，包含必要的新文件；不复制整个仓库，也不把当前提交号当作完整运行状态。不为记录另做哈希校验。
+- 失败通常一句：`无收益：尝试；有效结果；不采用原因。` 或 `未完成：尝试；失败环节；效果尚不能判断；下一步。` 有对应 EXP 时保留编号及必要证据入口；不要因运行失败否定方法。
+- 不复制完整日志、长命令、调试过程和大表。路径遵守项目约定，Markdown 链接相对当前文档。
 
-非指标型改进使用“原行为→验证后的行为”记录，不强行填写数值。
+## 结果可信度
 
-## Traceability
+基线与候选须具备可比条件；条件变化需说明。未测、缺基线、不可比较分别明确标注，不能把估计、源码分析或冒烟测试写成已验证收益。记录冲突时查对应证据，再同步修正 Detail 与 Timeline。
 
-对决策有影响的实验，关联对应代码版本、实际配置和结果证据。跨仓库实验在“涉及仓库”和实验记录中标明各实现位置。
+## 控制增长与保留
 
-存在未提交改动时，保留能够识别或恢复该实验实现的补丁或快照，不能仅引用提交号。不要求为每次小改动复制整个仓库，也不增加哈希校验流程。优先复用已有运行记录，不重复生成证据文档。
+Detail 达到约 10–15 次有意义实验或约 80 行时整理：合并重复调试和不影响决策的轮次，保留关键结果、负面结论、替换原因、历史最优与回退入口。
 
-## Failed or Incomplete Experiments
+仍过长时，将完整旧记录移入按需读取的归档，当前 Detail 保留结论、关键实验摘要和链接；修正移动后受影响的相对链接。篇幅增长不单独成为新建 IMP 的理由。
 
-保持简短并区分：
-
-```text
-无收益：尝试了什么；有效评估结果；本次不采用的原因。
-未完成：尝试了什么；失败环节；尚不能判断方法效果；下一步。
-```
-
-只有证据支持时，才写“后续避免重复路线”。
-
-## Compaction and Retention
-
-Detail is curated decision history, not an append-only audit log. If a Detail exceeds roughly 10–15 meaningful experiments or 80 lines, organize it: first merge repeated debugging and rounds that do not affect decisions.
-
-Never compact away a historical best, key negative conclusion, reason for replacing a solution, or rollback entry. If the record remains too long, move the complete old record into an on-demand archive and retain its summary and link in current Detail. Compaction does not authorize deleting artifacts.
-
-Create a successor IMP only when the phase or objective truly changes. Handle growth in the same phase through archival. EXP numbering within an IMP remains monotonic and is never reset by organization or archival.
-
-## Metric Integrity
-
-Use comparable baseline and candidate conditions. Use `未测`, `待补基线`, or `不可比较` when appropriate.
-
-Do not report estimates, code inspection, theoretical capacity, or smoke tests as verified gains. If records conflict, verify the underlying Artifact, then correct Detail and Timeline.
-
-Protecting historical versions can increase disk use. Control temporary artifact accumulation and default reading scope; do not delete important historical implementations merely to hold total storage constant.
+整理文档不授权删除产物。历史最优、当前采用和指定回退版本按项目规则保护；临时样本已被合法清理时标注已清理，保留必要结论与证据。结束时简洁汇报结果、采用决定、下一步和记录入口。

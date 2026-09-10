@@ -1,7 +1,7 @@
 interface:
-  display_name: "Agents Init"
-  short_description: "Initialize durable project agent documentation"
-  default_prompt: "Use $agents-init to investigate and initialize this project."
+  display_name: "项目初始化"
+  short_description: "充分调查项目与多仓库关系，建立精简的工作规则、导航和产物约定"
+  default_prompt: "使用 $agents-init 充分调查当前项目，初始化或增量更新项目规则、工作区导航和必要索引。"
 
 policy:
   allow_implicit_invocation: false

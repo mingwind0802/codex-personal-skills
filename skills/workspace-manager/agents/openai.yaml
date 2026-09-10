@@ -1,4 +1,7 @@
 interface:
-  display_name: "Workspace Manager"
-  short_description: "Map workspaces and govern project artifacts"
-  default_prompt: "Use $workspace-manager to update workspace structure, artifact placement, retention, or authorized cleanup rules."
+  display_name: "工作区管理"
+  short_description: "维护多仓库职责与文件导航，规范产物归置、成果保留和临时文件清理"
+  default_prompt: "使用 $workspace-manager 处理本次工作区变化或整理任务，维护导航，并按项目约定归置、保留或清理产物。"
+
+policy:
+  allow_implicit_invocation: true

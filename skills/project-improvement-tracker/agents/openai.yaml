@@ -1,7 +1,7 @@
 interface:
-  display_name: "Project Improvement Tracker"
-  short_description: "Track reproducible improvements and decisions"
-  default_prompt: "Use $project-improvement-tracker to update this project's linked Timeline and Detail with reproducible evidence and decisions."
+  display_name: "项目改进记录"
+  short_description: "精简记录改进方法、实测结果与下一步，关联实现证据并保留关键历史"
+  default_prompt: "使用 $project-improvement-tracker 更新本次改进的方法、结果与决策，关联对应实现和证据，并按需整理历史。"
 
 policy:
   allow_implicit_invocation: true

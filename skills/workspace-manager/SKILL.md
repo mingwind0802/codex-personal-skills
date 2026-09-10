@@ -1,100 +1,79 @@
 ---
 name: workspace-manager
-description: Maintain WORKSPACE.md structure and artifact rules for complex projects. Use when repositories, responsibilities, dependencies, or important locations change, or when the user asks to organize the workspace, define artifact conventions, or clean temporary files.
+description: 在多仓库或复杂项目的仓库边界、职责、依赖、重要位置变化，以及用户要求整理工作区、制定产物规范或清理临时文件时使用。维护 WORKSPACE.md 和归置、保留规则；普通代码修改与临时文件生成不单独触发。
 ---
 
-# Workspace Manager
+# 工作区管理
 
-Maintain `WORKSPACE.md` as the compact navigation, placement, and retention map of the project.
+让人和 Agent 知道有什么、各自做什么、怎么关联、去哪里找，以及产物放哪里、何时可以清理。
 
-It should answer:
+## 读取与边界
 
-**有什么 → 各自做什么 → 怎么关联 → 东西在哪里 → 如何归置和保留**
+先读适用的 AGENTS.md 和 WORKSPACE.md，只核查受影响的仓库与目录，不默认重扫全项目。地图缺失时按本次任务建立必要入口，不自动调用初始化 skill。
 
-## Read and Scope
+确认工作区根目录和独立仓库边界。保留各仓库原有结构，第三方参考仓库原则上不改；导航维护本身不授权搬迁或重构仓库。
 
-Read applicable `AGENTS.md` and `WORKSPACE.md` first. Only inspect affected repositories, directories, records, and references when verifying changes; do not rescan the whole project by default.
+## WORKSPACE.md
 
-Use this skill when:
-
-* repositories or major subprojects are added, removed, or replaced;
-* responsibilities, fixed aliases, cross-repository dependencies, or key entry points change;
-* important model, data, experiment-record, output, or shared-resource locations change;
-* the existing map is materially inaccurate;
-* the user asks to organize the workspace, establish artifact placement/retention conventions, or clean temporary files.
-
-Ordinary code edits, single experiments, and temporary file creation do not require rerunning this skill. Follow established `WORKSPACE.md` rules directly.
-
-## WORKSPACE Format
-
-Use only applicable sections and rows:
+优先沿用已有文档，只保留实际适用部分：
 
 ```markdown
 # Workspace
 
 ## 项目概述
-一句话说明目标，并明确工作区根目录。
+整个工作区的目标；本文件所在目录为工作区根目录（其他布局明确注明）。
 
 ## 项目地图
-
-| 固定简称 | 路径 | 类型 | 作用 | 来源 | 修改策略 | 关键入口 |
-|---|---|---|---|---|---|---|
-| ... | ... | 主项目／辅助／参考 | ... | 自研／GitHub | 可修改／原则上不改 | ... |
+| 简称 | 路径 | 职责／类型 | 来源 | 修改策略 | 关键入口 |
+|---|---|---|---|---|---|
 
 ## 主要关系
+- 仓库 A → 仓库 B：依赖或传递的内容。
 
-- A → B：依赖、接口或数据流。
-
-## 重要位置
-
+## 重要位置与产物规则
 | 内容 | 实际位置 | 归置／保留规则 |
 |---|---|---|
-| 改进记录 | 现有记录目录 | 跨仓库改进只维护一份主记录 |
-| 实验结果 | 现有输出目录 | 用 IMP／EXP 关联，优先复用已有运行目录 |
-| 临时试听／预览 | 实际临时目录 | 符合清理条件后可删除 |
-| 保留版本 | 实际保存位置 | 当前采用、历史最优、指定回退版本受保护 |
-| 共享数据／模型 | 实际位置 | 不因单次实验结束而删除 |
+
+## 常见任务入口
+- 任务 → 仓库／关键文件或文档入口。
+
+## 清理约定
+已确认的临时范围、用途结束条件及清理授权；没有约定时不推定自动删除权限。
 ```
 
-Do not list a complete file tree. Categories are logical rules and do not require creating matching directories. Record actual applicable locations only. Paths in WORKSPACE are relative to the workspace root; Markdown links are relative to the document containing them.
+仓库简称保持稳定，来源使用实际地址或明确说明。路径文本相对工作区根目录，Markdown 链接相对所在文档；外部资源明确标为外部位置。
 
-## File Placement
+重要位置包括实际存在的记录入口、共享数据／模型、实验结果、临时产物和保留成果；分类不要求各建目录。常见任务入口只补充地图不能直接回答的内容，避免重复。
 
-* Put code in the repository responsible for the feature and preserve its internal structure.
-* Prefer existing output directories. If a run ID already exists, link it instead of adding directory layers.
-* Name files by purpose and include IMP/EXP when useful; avoid names such as `final`, `new`, or `latest2` accumulating without meaning.
-* Before creating a long-lived directory, verify that no existing location fits. If a new location is necessary, update the map.
-* When moving files, update affected paths and Markdown links.
-* Do not restructure third-party repositories for uniformity.
+WORKSPACE 只保留稳定边界、位置和规则；单次指标、过程和每个产物的清单留在相关 Detail 或现有运行记录。文档变长时保留导航，把实现细节放回对应仓库文档。
 
-## Artifact Retention
+## 文件归置
 
-| Type | Default handling |
+- 代码留在负责该功能的仓库。输出优先复用已有位置，不按每次对话新建目录，也不强制把所有输出移出仓库。
+- 实验输出关联 IMP／EXP；已有运行 ID 时建立映射即可，不额外套目录。文件名表达用途，避免含糊的 final、new 或重复版本后缀。
+- 确需新增长期目录时先确认已有位置不适用，再登记用途；不创建空的预设目录树。
+- 跨仓库共享资源使用登记位置，跨仓库改进只维护一份主记录。
+- 搬迁已获授权的文件时，先确认受影响引用，再更新相关配置与链接并验证必要入口；无法确定影响的文件暂不移动。
+
+## 保留与清理
+
+| 类别 | 默认处理 |
 |---|---|
-| Current adopted, historical best, or designated rollback version | Retain; delete only when the user explicitly requests it |
-| Configs, compact evaluation results, and necessary implementation records supporting conclusions | Retain with the conclusion |
-| Listening samples, preview images, caches, and debug dumps | Clean according to temporary-artifact rules |
-| Unknown purpose or dependency | Do not delete until resolved |
+| 当前采用、历史最优、用户指定回退版本及其恢复所需文件 | 保护；只有用户明确要求删除对应成果时才删除 |
+| 支撑结论的实际配置、精简评估结果和必要实现记录 | 随结论保留，不作为普通临时产物清理 |
+| 试听音频、预览图、缓存、调试转储等过程产物 | 可归为临时，满足下述条件后清理 |
+| 用途、归属或依赖不明的文件 | 保留，待明确后分类 |
 
-Listening samples are temporary by default. Reclassify them as retained results when they become important subjective-evaluation evidence or the user requests retention.
+临时样本若成为重要评价证据或被用户指定保留，转为保留成果。“被替代”“Git 未跟踪”、扩展名或文件年龄都不能单独作为删除依据。
 
-Protecting historical versions can increase disk use. Control temporary artifact accumulation and default reading scope; do not delete important historical implementations merely to hold total storage constant.
+清理仅在用户提出清理任务或已有明确清理约定时执行，须同时满足：属于已确认的临时范围、用途结束、未被运行任务或保留成果依赖，并在授权范围内。已有适用授权不重复询问；权限不清时先完成分类和可审查的候选清单。
 
-## Cleanup Safety
+展示或交付试听样本不自动等于用途结束。按用户确认完成、任务已结束且不再需要样本，或既有约定判断。不要为判断而扫描所有历史，核查关联记录和相关运行任务即可；无法确认则保留。
 
-Deleting files requires all of these conditions:
+清理后修正关联记录中的失效链接，必要时标注临时产物已清理。简洁汇报类别、数量和释放空间，不为每个临时文件新增长期日志。保留成果可以持续增长，控制临时堆积与默认读取量，不承诺总容量固定。
 
-1. the target is inside an agreed temporary scope;
-2. its purpose has ended;
-3. no running task or retained result depends on it;
-4. deletion is covered by the user's existing cleanup authorization.
+## 更新与完成
 
-Invocation of this skill or a general organization request does not by itself expand deletion authority. Do not infer safety from extension, age, or the fact that a file was superseded. If purpose or dependencies are unclear, do not delete it.
+仓库增删、职责变化、重要依赖或位置变化时更新地图；归置和清理约定变化时更新规则。普通实验遵守既有规则即可，不为每次产物生成改写 WORKSPACE。
 
-After authorized cleanup, report categories, counts, and freed space; do not create a permanent record for every temporary file. If an experiment record links to a removed sample, mark it briefly as “临时样本已清理” while preserving necessary results and conclusions.
-
-## Keep It Compact
-
-WORKSPACE describes stable boundaries, entry points, locations, placement, and retention rules. Keep implementation details in the relevant repository and experiment decisions in tracker records. If WORKSPACE grows, retain navigation and move detail back to its owning documentation.
-
-**WORKSPACE 负责告诉你去哪里找、如何归置和保留，而不是解释所有东西怎么实现。**
+核实本次涉及的入口和路径，保留无关内容。简洁汇报更新、整理或清理结果，以及尚未解决的事项。
