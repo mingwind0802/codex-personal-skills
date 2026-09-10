@@ -1,67 +1,97 @@
 ---
 name: project-improvement-tracker
-description: Maintain improvement records for material implementation changes, formal benchmarks, or explicit tracking requests. Respect project-local formats. Ordinary questions, status checks, read-only reviews, and standalone prose edits do not trigger record writes.
+description: Track material project improvements and experiments.
 ---
 
 # Project Improvement Tracker
 
-Keep a two-level project history: Detail is the auditable source of truth; Timeline is the compact daily view.
+Keep project history useful without letting the default agent read set grow with time.
+
+## Structure
+
+Use three levels:
+
+1. **Timeline** — compact index.
+2. **Detail** — one bounded record per `IMP-YYYYMMDD-NN`.
+3. **Artifact** — existing logs, configs, benchmark outputs, reports, etc.
+
+Artifacts are raw evidence. Detail records decisions. Timeline indexes Detail.
+
+Do not create a separate Evidence log.
 
 ## Workflow
 
-1. Read the applicable `AGENTS.md` and obey project-local names, schemas, and exclusions.
-2. Determine whether the task calls for record updates. Reading this skill or reviewing project history does not itself authorize writes. Locate the two records in the target repository; create missing files only when an update is warranted.
-3. Read Timeline first (search relevant rows in large files), then locate and read the matching Detail entry and local format rules. Do not read both histories in full by default. Reuse an existing ID for the same objective; otherwise check IDs in both files and assign the next `IMP-YYYYMMDD-NN` for that date.
-4. Collect evidence from the implementation and tests. Record only observed values as facts.
-5. Update Detail first using the project's record mode below.
-6. Update the matching Timeline row with the latest status, 1–3 decisive metric changes, and the next action.
-7. Verify both files use the same ID and do not claim improvement without comparable baseline and candidate measurements.
+1. Read applicable `AGENTS.md`.
+2. Read current Timeline.
+3. Read only the relevant Detail.
+4. Read artifacts only when verification or debugging requires them.
+5. Reuse the same IMP for the same objective; create a new IMP when the objective or phase materially changes.
+6. After a material experiment or change, update Detail, then Timeline.
 
-Update records in the same task that materially changes the project or its measured outcome. Do not wait for a separate documentation request.
+Do not scan all Details or archives by default.
 
-## Detail Schema
+## Timeline
 
-Keep ID, date, title, status, objective, changed scope, validation evidence, and conclusion for each improvement. Add only fields relevant to the change:
-
-- ID, date, title, status, objective, and changed scope;
-- implementation summary and important design decisions;
-- environment, model/dependency versions, dataset or load, and key configuration;
-- for measured comparisons, a table with `指标 | 基线 | 改进后 | 变化 | 结论`; configuration fixes and architecture changes do not require artificial metric tables;
-- test commands and artifact paths;
-- conclusion, risks, rollback state, and next actions.
-
-Use statuses: `规划中`, `进行中`, `待验证`, `已验证`, `失败`, `已回退` unless the project defines alternatives.
-
-Record modes:
-
-- Default audit mode: append dated/numbered rounds under the same ID; preserve failed and superseded measurements with their context.
-- Project compact mode: when local AGENTS.md requires a final summary, update that summary and link original artifacts. Keep failures concise as required locally; do not delete original evidence or recreate per-round tables against local rules.
-
-Local schemas and exclusions take precedence over this default template. Do not reorganize unrelated history as part of an update.
-
-## Timeline Schema
-
-Maintain one row per improvement:
+Use:
 
 ```markdown
-| 日期 | 改进 ID | 改进内容 | 状态 | 关键指标变化 | 下一步 |
+| 日期 | 改进 ID | 改进内容 | 状态 | 关键结果 | 下一步 |
 ```
 
-Keep the row short. Put commands, complete tables, diagnostics, and explanations in Detail. Update an existing row rather than creating duplicate rows for the same ID.
+Keep one short row per IMP.
+
+Current Timeline contains all active IMPs and only the latest ~30 closed IMPs. Move older closed rows to date-based archives and search archives only when needed.
+
+## Detail
+
+Detail should answer:
+
+**做了什么 → 指标怎么变 → 得出什么结论 → 下一步是什么**
+
+```markdown
+# IMP-... 标题
+
+状态：
+目标：
+前置：
+后继：
+
+## 当前结论
+当前采用方案及最重要的 1–3 个结果。
+
+## 下一步
+下一项实验或动作。
+
+## 实验记录
+
+| 实验 | 核心改动 | 关键指标变化 | 结论 |
+|---|---|---|---|
+| EXP-01 | ... | PESQ 2.31→2.39 (+0.08) | 保留 |
+
+## Artifact
+- path/to/result
+```
+
+Only record decision-relevant experiments and 1–3 important metrics.
+
+Failed experiments normally use one sentence:
+
+```markdown
+- 失败：<尝试>；<结果>；<判断>；后续避免 <重复路线>。
+```
+
+Do not copy full logs, commands, debugging history, or large result tables.
+
+Detail is curated decision history, not an append-only audit log. Collapse minor superseded rounds.
+
+If a Detail exceeds roughly 10–15 meaningful experiments or ~80 lines, compact it. If the work has entered a new phase or question, close it and create a successor IMP.
 
 ## Metric Integrity
 
-- Write `未测` when no measurement exists.
-- Write `待补基线` when the candidate was measured without a comparable baseline.
-- Write `不可比较` when conditions differ or a delta cannot be calculated responsibly.
-- Calculate absolute delta as `candidate - baseline` and label units.
-- Calculate percentage change only when the denominator and direction are meaningful; state whether lower or higher is better.
-- Record workload, concurrency, warmup, precision, hardware, model, dependencies, and dataset whenever they can change results.
-- Do not turn estimates, code inspection, one-off smoke checks, or theoretical capacity into verified gains.
-- Record regressions, failures, and rollbacks so future work does not repeat them.
+Use comparable baseline and candidate conditions.
 
-## Scope
+Use `未测`, `待补基线`, or `不可比较` when appropriate.
 
-Record changes that affect behavior or measurable project outcomes, including performance, quality, stability, resources, architecture, scheduling, and operational capacity. Skip standalone formatting, comments, or prose edits unless they are part of an existing tracked improvement.
+Do not report estimates, code inspection, theoretical capacity, or smoke tests as verified gains.
 
-For a formal benchmark within the authorized task, record measured results under the applicable ID, or create a benchmark entry. Ordinary investigations, explanations, status checks, and read-only reviews return findings without creating or updating records unless the user explicitly requests tracking. Explicit planning/tracking requests may create entries without an implementation.
+If records conflict, verify the underlying Artifact, then correct Detail and Timeline.
