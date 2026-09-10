@@ -1,7 +1,7 @@
 interface:
   display_name: "Project Improvement Tracker"
-  short_description: "Track material project improvements and experiments"
-  default_prompt: "Use $project-improvement-tracker to update this project's improvement records with verified results and compact superseded Detail when appropriate."
+  short_description: "Track reproducible improvements and decisions"
+  default_prompt: "Use $project-improvement-tracker to update this project's linked Timeline and Detail with reproducible evidence and decisions."
 
 policy:
   allow_implicit_invocation: true

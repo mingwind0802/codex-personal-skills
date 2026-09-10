@@ -4,9 +4,9 @@ Private collection of reusable Codex skills.
 
 ## Skills
 
-- `agents-init`: Investigates a project and initializes durable `AGENTS.md`, `WORKSPACE.md`, and CodeGraph entry points. Explicit invocation only.
-- `project-improvement-tracker`: Tracks material project improvements using compact Timeline, Detail, and Artifact layers.
-- `workspace-manager`: Maintains a compact `WORKSPACE.md` map when repository boundaries, responsibilities, dependencies, or important resource locations change.
+- `agents-init`: Investigates a project and establishes durable rules, locations, `AGENTS.md`, `WORKSPACE.md`, and CodeGraph entry points. Explicit invocation only.
+- `project-improvement-tracker`: Tracks reproducible project improvements through a linked Timeline, Detail records, and existing artifacts.
+- `workspace-manager`: Maintains workspace navigation plus artifact placement, retention, and authorized temporary-file cleanup rules.
 
 ## Install on another device
 
