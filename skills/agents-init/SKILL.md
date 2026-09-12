@@ -27,6 +27,8 @@ description: 仅在用户明确要求初始化项目、创建 AGENTS.md 或调�
 
 只保留未来 Agent 高频需要的稳定规则：项目目标、核心约束、操作与验证约定、不可轻易推断的设计限制，以及 WORKSPACE 和记录入口。
 
+文档分工保持明确：AGENTS 维护长期协作约定，WORKSPACE 维护边界与位置，Detail 维护实际进展和决策，Timeline 摘要引用；已有 plan 维护阶段顺序和验收门槛，通过记录入口引用实际进度。
+
 写明简短的维护约定：
 
 - 实质改进或实验结束后，用 `project-improvement-tracker` 更新 Detail，再更新 Timeline。
@@ -34,7 +36,7 @@ description: 仅在用户明确要求初始化项目、创建 AGENTS.md 或调�
 - 日常生成文件遵守 WORKSPACE 中已有的归置与保留规则，不为每个文件重新调用管理 skill。
 - 长期工作约定变化时增量更新 AGENTS，无须重新初始化。
 
-仅登记实际可用的 skills；缺少配套 skill 时记录缺项，不自动安装。不要复制 skill 全文、README 或 WORKSPACE，也不要写入频繁变化的指标和模型版本。
+仅登记实际可用的 skills；缺少配套 skill 时记录缺项，不自动安装。通用管理流程引用对应 skill，AGENTS 保留项目入口与特有约束；不要复制 skill 全文、README 或 WORKSPACE，也不要写入频繁变化的指标和模型版本。
 
 ## WORKSPACE.md
 
