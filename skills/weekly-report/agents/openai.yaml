@@ -1,0 +1,7 @@
+interface:
+  display_name: "项目周报"
+  short_description: "从项目记录提炼本周主线进展，附关键对比表格并简述问题和下周计划"
+  default_prompt: "使用 $weekly-report 从项目 Timeline 和 Detail 整理本周周报：简短要点为主，关键对比另附表格，难点与问题、下周计划各用一两句话。"
+
+policy:
+  allow_implicit_invocation: true
